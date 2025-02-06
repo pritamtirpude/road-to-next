@@ -1,5 +1,5 @@
 import Heading from "@/components/Heading";
-import { ticketPath, ticketsPath } from "@/paths";
+import { ticketsPath } from "@/paths";
 import Link from "next/link";
 import React from "react";
 
