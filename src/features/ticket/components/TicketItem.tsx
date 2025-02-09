@@ -1,8 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { ticketPath } from "@/paths";
-import { LucideSquareArrowOutUpRight, LucideTrash } from "lucide-react";
+import { ticketEditPath, ticketPath } from "@/paths";
+import {
+  LucidePencil,
+  LucideSquareArrowOutUpRight,
+  LucideTrash,
+} from "lucide-react";
 import Link from "next/link";
 import { TICKET_ICONS } from "../constants";
 import { getTickets } from "../queries/get-tickets";
@@ -18,6 +22,14 @@ const TicketItem = ({ ticket, isDetail }: TicketItemProps) => {
     <Button variant="outline" asChild size="icon">
       <Link href={ticketPath(ticket.id)}>
         <LucideSquareArrowOutUpRight className="size-4" />
+      </Link>
+    </Button>
+  );
+
+  const editButton = (
+    <Button variant="outline" size="icon" asChild>
+      <Link prefetch href={ticketEditPath(ticket.id)}>
+        <LucidePencil className="size-4" />
       </Link>
     </Button>
   );
@@ -57,7 +69,17 @@ const TicketItem = ({ ticket, isDetail }: TicketItemProps) => {
         </CardContent>
       </Card>
       <div className="flex flex-col gap-y-1">
-        {isDetail ? deleteButton : detailButton}
+        {isDetail ? (
+          <>
+            {editButton}
+            {deleteButton}
+          </>
+        ) : (
+          <>
+            {detailButton}
+            {editButton}
+          </>
+        )}
       </div>
     </div>
   );
