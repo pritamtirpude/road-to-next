@@ -1,8 +1,14 @@
-import { Button } from "@/components/ui/button";
+"use client";
+
+import FieldError from "@/components/form/FieldError";
+import Form from "@/components/form/Form";
+import SubmitButton from "@/components/form/SubmitButton";
+import { EMPTY_ACTION_STATE } from "@/components/form/utils/to-action-state";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Ticket } from "@prisma/client";
 import { Label } from "@radix-ui/react-label";
+import { useActionState } from "react";
 import { upsertTicket } from "../actions/upsert-ticket";
 
 type TicketUpsertFormProps = {
@@ -10,24 +16,37 @@ type TicketUpsertFormProps = {
 };
 
 const TicketUpsertForm = ({ ticket }: TicketUpsertFormProps) => {
+  const [actionState, action] = useActionState(
+    upsertTicket.bind(null, ticket?.id),
+    EMPTY_ACTION_STATE
+  );
+
   return (
-    <form
-      action={upsertTicket.bind(null, ticket?.id)}
-      className="flex flex-col gap-y-2"
-    >
+    <Form action={action} actionState={actionState}>
       <Label htmlFor="title">Title</Label>
-      <Input id="title" name="title" type="text" defaultValue={ticket?.title} />
+      <Input
+        id="title"
+        name="title"
+        type="text"
+        defaultValue={
+          (actionState.payload?.get("title") as string) ?? ticket?.title
+        }
+      />
+      <FieldError actionState={actionState} name="title" />
 
       <Label htmlFor="content">Content</Label>
       <Textarea
         className="h-full max-h-24"
         id="content"
         name="content"
-        defaultValue={ticket?.content}
+        defaultValue={
+          (actionState.payload?.get("content") as string) ?? ticket?.content
+        }
       />
+      <FieldError actionState={actionState} name="content" />
 
-      <Button type="submit">{ticket ? "Edit" : "Create"}</Button>
-    </form>
+      <SubmitButton label={ticket ? "Edit" : "Create"} />
+    </Form>
   );
 };
 
