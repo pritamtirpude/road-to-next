@@ -1,6 +1,8 @@
+import RedirectToast from "@/components/RedirectToast";
 import TicketItem from "@/features/ticket/components/TicketItem";
 import { getTicket } from "@/features/ticket/queries/get-ticket";
 import { notFound } from "next/navigation";
+import { Fragment } from "react";
 
 type TicketPageProps = {
   params: Promise<{
@@ -17,9 +19,12 @@ const TicketPage = async ({ params }: TicketPageProps) => {
   }
 
   return (
-    <div className="flex justify-center animate-fade-in-from-top">
-      <TicketItem ticket={ticket} isDetail />
-    </div>
+    <Fragment>
+      <div className="flex justify-center animate-fade-in-from-top">
+        <TicketItem ticket={ticket} isDetail />
+      </div>
+      <RedirectToast />
+    </Fragment>
   );
 };
 
