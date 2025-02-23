@@ -13,14 +13,11 @@ import {
   LucideMoreVertical,
   LucidePencil,
   LucideSquareArrowOutUpRight,
-  LucideTrash,
 } from "lucide-react";
 import Link from "next/link";
-import { deleteTicket } from "../actions/delete-ticket";
 import { TICKET_ICONS } from "../constants";
 import { getTickets } from "../queries/get-tickets";
 import TicketMoreMenu from "./TicketMoreMenu";
-import ConfirmDialog from "@/components/ConfirmDialog";
 
 type TicketItemProps = {
   ticket: Awaited<ReturnType<typeof getTickets>>[number];
