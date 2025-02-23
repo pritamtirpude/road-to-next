@@ -8,16 +8,19 @@ import {
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { ticketEditPath, ticketPath } from "@/paths";
+import { toCurrencyFromCent } from "@/utils/currency";
 import {
+  LucideMoreVertical,
   LucidePencil,
   LucideSquareArrowOutUpRight,
   LucideTrash,
 } from "lucide-react";
 import Link from "next/link";
+import { deleteTicket } from "../actions/delete-ticket";
 import { TICKET_ICONS } from "../constants";
 import { getTickets } from "../queries/get-tickets";
-import { deleteTicket } from "../actions/delete-ticket";
-import { toCurrencyFromCent } from "@/utils/currency";
+import TicketMoreMenu from "./TicketMoreMenu";
+import ConfirmDialog from "@/components/ConfirmDialog";
 
 type TicketItemProps = {
   ticket: Awaited<ReturnType<typeof getTickets>>[number];
@@ -41,12 +44,15 @@ const TicketItem = ({ ticket, isDetail }: TicketItemProps) => {
     </Button>
   );
 
-  const deleteButton = (
-    <form action={deleteTicket.bind(null, ticket.id)}>
-      <Button variant="outline" size="icon">
-        <LucideTrash className="size-4" />
-      </Button>
-    </form>
+  const moreMenu = (
+    <TicketMoreMenu
+      ticket={ticket}
+      trigger={
+        <Button variant="outline" size="icon">
+          <LucideMoreVertical className="size-4" />
+        </Button>
+      }
+    />
   );
 
   return (
@@ -85,7 +91,7 @@ const TicketItem = ({ ticket, isDetail }: TicketItemProps) => {
         {isDetail ? (
           <>
             {editButton}
-            {deleteButton}
+            {moreMenu}
           </>
         ) : (
           <>
