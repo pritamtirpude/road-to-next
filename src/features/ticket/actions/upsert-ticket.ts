@@ -2,7 +2,7 @@
 
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import { ticketPath, ticketsPath } from "@/paths";
+import { signInPath, ticketPath, ticketsPath } from "@/paths";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import {
@@ -12,6 +12,7 @@ import {
 } from "@/components/form/utils/to-action-state";
 import { setCookieByKey } from "@/actions/cookies";
 import { toCent } from "@/utils/currency";
+import { getAuth } from "@/features/auth/queries/get-auth";
 
 const upsertTicketScehma = z.object({
   title: z.string().min(1).max(191),
@@ -25,6 +26,12 @@ export const upsertTicket = async (
   _actionState: ActionState,
   formData: FormData
 ) => {
+  const { user } = await getAuth();
+
+  if (!user) {
+    redirect(signInPath());
+  }
+
   try {
     const data = upsertTicketScehma.parse({
       title: formData.get("title"),
@@ -35,6 +42,7 @@ export const upsertTicket = async (
 
     const dbData = {
       ...data,
+      userId: user.id,
       bounty: toCent(data.bounty),
     };
 
