@@ -2,13 +2,14 @@
 
 import { signOut } from "@/features/auth/actions/sign-out";
 import useAuth from "@/features/auth/hooks/use-auth";
-import { homePath, signInPath, signUpPath, ticketsPath } from "@/paths";
+import { homePath, signInPath, signUpPath } from "@/paths";
 import { LucideKanban, LucideLogOut } from "lucide-react";
 import Link from "next/link";
 import { Fragment } from "react";
 import SubmitButton from "./form/SubmitButton";
 import ThemeSwitcher from "./theme/ThemeSwitcher";
 import { buttonVariants } from "./ui/button";
+import AccountDropdown from "./AccountDropdown";
 
 const Header = () => {
   const { user, isFetched } = useAuth();
@@ -18,17 +19,7 @@ const Header = () => {
   }
 
   const navItems = user ? (
-    <Fragment>
-      <Link
-        href={ticketsPath()}
-        className={buttonVariants({ variant: "default" })}
-      >
-        Tickets
-      </Link>
-      <form action={signOut}>
-        <SubmitButton label="Sign Out" icon={<LucideLogOut />} />
-      </form>
-    </Fragment>
+    <AccountDropdown user={user} />
   ) : (
     <Fragment>
       <Link
