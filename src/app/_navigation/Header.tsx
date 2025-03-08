@@ -1,14 +1,12 @@
 "use client";
 
-import { signOut } from "@/features/auth/actions/sign-out";
 import useAuth from "@/features/auth/hooks/use-auth";
 import { homePath, signInPath, signUpPath } from "@/paths";
-import { LucideKanban, LucideLogOut } from "lucide-react";
+import { LucideKanban } from "lucide-react";
 import Link from "next/link";
 import { Fragment } from "react";
-import SubmitButton from "./form/SubmitButton";
-import ThemeSwitcher from "./theme/ThemeSwitcher";
-import { buttonVariants } from "./ui/button";
+import ThemeSwitcher from "../../components/theme/ThemeSwitcher";
+import { buttonVariants } from "../../components/ui/button";
 import AccountDropdown from "./AccountDropdown";
 
 const Header = () => {
