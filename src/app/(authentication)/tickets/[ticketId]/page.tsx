@@ -4,7 +4,6 @@ import TicketItem from "@/features/ticket/components/TicketItem";
 import { getTicket } from "@/features/ticket/queries/get-ticket";
 import { homePath } from "@/paths";
 import { notFound } from "next/navigation";
-import { Fragment } from "react";
 
 type TicketPageProps = {
   params: Promise<{
