@@ -4,7 +4,8 @@ import Spinner from "@/components/Spinner";
 import { getAuth } from "@/features/auth/queries/get-auth";
 import TicketList from "@/features/ticket/components/TicketList";
 import TicketUpsertForm from "@/features/ticket/components/TicketUpsertForm";
-import { SearchParams } from "@/features/ticket/search-params";
+import { searchParamsCache } from "@/features/ticket/search-params";
+import { SearchParams } from "nuqs/server";
 import { Fragment, Suspense } from "react";
 
 type TicketsPageProps = {
@@ -27,7 +28,10 @@ const TicketsPage = async ({ searchParams }: TicketsPageProps) => {
           className="w-full max-w-[420px] self-center"
         />
         <Suspense fallback={<Spinner />}>
-          <TicketList userId={user?.id} searchParams={await searchParams} />
+          <TicketList
+            userId={user?.id}
+            searchParams={await searchParamsCache.parse(searchParams)}
+          />
         </Suspense>
       </div>
     </Fragment>
