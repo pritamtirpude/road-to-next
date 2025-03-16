@@ -1,20 +1,19 @@
 "use server";
 
-import { z } from "zod";
-import { prisma } from "@/lib/prisma";
-import { signInPath, ticketPath, ticketsPath } from "@/paths";
-import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
+import { setCookieByKey } from "@/actions/cookies";
 import {
   ActionState,
   formErrorToActionState,
   toActionState,
 } from "@/components/form/utils/to-action-state";
-import { setCookieByKey } from "@/actions/cookies";
-import { toCent } from "@/utils/currency";
-import { getAuth } from "@/features/auth/queries/get-auth";
 import { getAuthOrRedirect } from "@/features/auth/queries/get-auth-or-redirect";
 import { isOwner } from "@/features/auth/utils/is-owner";
+import { prisma } from "@/lib/prisma";
+import { ticketPath, ticketsPath } from "@/paths";
+import { toCent } from "@/utils/currency";
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import { z } from "zod";
 
 const upsertTicketScehma = z.object({
   title: z.string().min(1).max(191),
