@@ -1,6 +1,4 @@
 import CardCompact from "@/components/CardCompact";
-import { getAuth } from "@/features/auth/queries/get-auth";
-import { isOwner } from "@/features/auth/utils/is-owner";
 import { Fragment } from "react";
 import { CommentWithMetadata } from "../types";
 import CommentCreateForm from "./CommentCreateForm";
@@ -12,9 +10,7 @@ type CommentsProps = {
   comments?: CommentWithMetadata[];
 };
 
-const Comments = async ({ ticketId, comments = [] }: CommentsProps) => {
-  const { user } = await getAuth();
-
+const Comments = ({ ticketId, comments = [] }: CommentsProps) => {
   return (
     <Fragment>
       <CardCompact
@@ -28,7 +24,7 @@ const Comments = async ({ ticketId, comments = [] }: CommentsProps) => {
             key={comment.id}
             comment={comment}
             buttons={[
-              ...(isOwner(user, comment)
+              ...(comment.isOwner
                 ? [<CommentDeleteButton key="0" id={comment.id} />]
                 : []),
             ]}
