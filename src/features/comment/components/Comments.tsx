@@ -1,10 +1,9 @@
 "use client";
 
 import CardCompact from "@/components/CardCompact";
+import { Button } from "@/components/ui/button";
 import { PaginatedData } from "@/types/pagination";
-import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
-import { Fragment, useEffect } from "react";
-import { useInView } from "react-intersection-observer";
+import { Fragment, useState } from "react";
 import { getComments } from "../queries/get-comments";
 import { CommentWithMetadata } from "../types";
 import CommentCreateForm from "./CommentCreateForm";
@@ -17,43 +16,28 @@ type CommentsProps = {
 };
 
 const Comments = ({ ticketId, paginatedComments }: CommentsProps) => {
-  const queryKey = ["comments", ticketId];
+  const [comments, setComments] = useState(paginatedComments.list);
+  const [metadata, setMetadata] = useState(paginatedComments.metadata);
 
-  const queryClient = useQueryClient();
+  const handleMore = async () => {
+    const morePaginatedComments = await getComments(ticketId, metadata.cursor);
+    const moreComments = morePaginatedComments.list;
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, refetch } =
-    useInfiniteQuery({
-      queryKey,
-      queryFn: ({ pageParam }) => getComments(ticketId, pageParam),
-      initialPageParam: undefined as string | undefined,
-      getNextPageParam: (lastPage) =>
-        lastPage.metadata.hasNextPage ? lastPage.metadata.cursor : undefined,
-      initialData: {
-        pages: [
-          {
-            list: paginatedComments.list,
-            metadata: paginatedComments.metadata,
-          },
-        ],
-        pageParams: [undefined],
-      },
-    });
+    setComments([...comments, ...moreComments]);
+    setMetadata(morePaginatedComments.metadata);
+  };
 
-  const comments = data.pages.flatMap((page) => page.list);
+  const handleDeleteButton = async (id: string) => {
+    setComments((prevComments) =>
+      prevComments.filter((comment) => comment.id !== id)
+    );
+  };
 
-  const handleMore = () => fetchNextPage();
+  const handleCreateComment = (comment: CommentWithMetadata | undefined) => {
+    if (!comment) return;
 
-  const handleDeleteButton = () => queryClient.invalidateQueries({ queryKey });
-
-  const handleCreateComment = () => queryClient.invalidateQueries({ queryKey });
-
-  const { ref, inView } = useInView();
-
-  useEffect(() => {
-    if (inView && hasNextPage && !isFetchingNextPage) {
-      fetchNextPage();
-    }
-  }, [fetchNextPage, hasNextPage, inView, isFetchingNextPage]);
+    setComments((prevComments) => [comment, ...prevComments]);
+  };
 
   return (
     <Fragment>
@@ -87,9 +71,11 @@ const Comments = ({ ticketId, paginatedComments }: CommentsProps) => {
         ))}
       </div>
 
-      <div ref={ref}>
-        {!hasNextPage && (
-          <p className="text-right text-xs italic">No more comments.</p>
+      <div className="flex flex-col justify-center ml-8">
+        {metadata.hasNextPage && (
+          <Button variant="ghost" onClick={handleMore}>
+            More
+          </Button>
         )}
       </div>
     </Fragment>
