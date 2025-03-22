@@ -9,7 +9,6 @@ import {
 import { cn } from "@/lib/utils";
 import { ticketEditPath, ticketPath } from "@/paths";
 import { toCurrencyFromCent } from "@/utils/currency";
-import { Prisma } from "@prisma/client";
 import {
   LucideMoreVertical,
   LucidePencil,
@@ -17,18 +16,11 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { TICKET_ICONS } from "../constants";
+import { TicketWithMetadata } from "../types";
 import TicketMoreMenu from "./TicketMoreMenu";
 
 type TicketItemProps = {
-  ticket: Prisma.TicketGetPayload<{
-    include: {
-      user: {
-        select: {
-          username: true;
-        };
-      };
-    };
-  }> & { isOwner: boolean };
+  ticket: TicketWithMetadata;
   isDetail?: boolean;
   comments?: React.ReactNode;
 };
